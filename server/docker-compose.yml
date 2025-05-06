@@ -1,7 +1,9 @@
+version: '4.39.0'
+
 services:
   db:
     container_name: postgres
-    image: postgres:15.2
+    image: postgres:17.4
     restart: always
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -13,10 +15,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - backend
-
   redis:
     container_name: redis
-    image: redis:7-alpine
+    image: redis:7.4.2
     restart: always
     ports:
       - 6379:6379
@@ -25,7 +26,6 @@ services:
       - redis_data:/data
     networks:
       - backend
-
 volumes:
   postgres_data:
   redis_data:
