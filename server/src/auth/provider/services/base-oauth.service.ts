@@ -9,7 +9,8 @@ import { TypeBaseProviderOptions, TypeUserInfo } from './types';
 interface TokenResponse {
   access_token: string;
   refresh_token?: string;
-  expires_at?: string;
+  expires_in: number;
+  expires_at?: number;
   [key: string]: unknown;
 }
 
@@ -41,74 +42,75 @@ export class BaseOAuthService {
   }
 
   public async findUserByCode(code: string): Promise<TypeUserInfo> {
-    if (!code) {
-      throw new BadRequestException('Требуется код авторизации');
-    }
+    const client_id = this.options.client_id;
+    const client_secret = this.options.client_secret;
 
     const tokenQuery = new URLSearchParams({
+      client_id,
+      client_secret,
       code,
-      client_id: this.options.client_id,
-      client_secret: this.options.client_secret,
       redirect_uri: this.getRedirectUrl(),
       grant_type: 'authorization_code',
     });
 
-    try {
-      const tokenRequest = await fetch(this.options.access_url, {
-        method: 'POST',
-        body: tokenQuery,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Accept: 'application/json',
-        },
-      });
+    const tokensRequest = await fetch(this.options.access_url, {
+      method: 'POST',
+      body: tokenQuery,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: 'application/json',
+      },
+    });
 
-      const tokenResponse = (await tokenRequest.json()) as TokenResponse;
-
-      if (!tokenRequest.ok) {
-        throw new BadRequestException(
-          `Ошибка при получении токена от ${this.options.access_url}`,
-        );
-      }
-
-      if (!tokenResponse.access_token) {
-        throw new BadRequestException(
-          `Не получен токен от ${this.options.access_url}`,
-        );
-      }
-
-      const userRequest = await fetch(this.options.profile_url, {
-        headers: {
-          Authorization: `Bearer ${tokenResponse.access_token}`,
-          Accept: 'application/json',
-        },
-      });
-
-      if (!userRequest.ok) {
-        throw new UnauthorizedException(
-          `Ошибка при получении данных пользователя от ${this.options.profile_url}`,
-        );
-      }
-
-      const user = (await userRequest.json()) as TypeUserInfo;
-      const userData = this.extractUserInfo(user);
-
-      return {
-        ...userData,
-        access_token: tokenResponse.access_token,
-        refresh_token: tokenResponse.refresh_token,
-        expires_at: tokenResponse.expires_at,
-        provider: this.options.name,
-      };
-    } catch (error) {
-      if (
-        error instanceof BadRequestException ||
-        error instanceof UnauthorizedException
-      ) {
-        throw error;
-      }
-      throw new BadRequestException('Ошибка аутентификации через OAuth');
+    if (!tokensRequest.ok) {
+      throw new BadRequestException(
+        `Не удалось получить токены с ${this.options.access_url}.`,
+      );
     }
+
+    const tokens = (await tokensRequest.json()) as TokenResponse;
+
+    if (!tokens.access_token) {
+      throw new BadRequestException(
+        `Нет access_token в ответе от ${this.options.access_url}.`,
+      );
+    }
+
+    const userRequest = await fetch(this.options.profile_url, {
+      headers: {
+        Authorization: `Bearer ${tokens.access_token}`,
+      },
+    });
+
+    if (!userRequest.ok) {
+      throw new UnauthorizedException(
+        `Не удалось получить профиль с ${this.options.profile_url}.`,
+      );
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const user = await userRequest.json();
+    const userData = this.extractUserInfo(user);
+
+    if (!userData.email) {
+      throw new UnauthorizedException('Недостаточно данных о пользователе');
+    }
+
+    return {
+      ...userData,
+      provider: this.options.name,
+      access_token: tokens.access_token,
+      refresh_token: tokens.refresh_token,
+      expires_at: this.calculateExpiresAt(tokens),
+    };
+  }
+
+  private calculateExpiresAt(tokens: TokenResponse): number | undefined {
+    const expiresIn = parseInt(tokens.expires_in?.toString(), 10);
+    if (!isNaN(expiresIn)) {
+      return Math.floor(Date.now() / 1000) + expiresIn;
+    }
+    return tokens.expires_at ?? undefined;
   }
 
   public getRedirectUrl(): string {

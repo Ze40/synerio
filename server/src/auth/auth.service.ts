@@ -10,15 +10,19 @@ import { verify } from 'argon2';
 import { Request, Response } from 'express';
 import { AuthMethod, User } from 'prisma/__generated__';
 
+import { PrismaService } from '@/prisma/prisma.service';
 import { UserService } from '@/user/user.service';
 
 import { LoginDto, RegisterDto } from './dto';
+import { ProviderService } from './provider/provider.service';
 
 @Injectable()
 export class AuthService {
   public constructor(
     private readonly userService: UserService,
     private readonly configService: ConfigService,
+    private readonly providerService: ProviderService,
+    private readonly prismaService: PrismaService,
   ) {}
 
   public async register(req: Request, dto: RegisterDto) {
@@ -73,19 +77,67 @@ export class AuthService {
     });
   }
 
-  private async saveSession(req: Request, user: User) {
+  private async saveSession(req: Request, user: User): Promise<{ user: User }> {
     return new Promise((resolve, reject) => {
       req.session.userId = user.id;
-
       req.session.save((err) => {
         if (err) {
           return reject(
             new InternalServerErrorException('Не удалось сохранить сессию'),
           );
         }
+        resolve({ user });
       });
-
-      resolve({ user });
     });
+  }
+
+  public async extractProfileFromCode(
+    req: Request,
+    provider: string,
+    code: string,
+  ) {
+    const providerInstance = this.providerService.findByService(provider);
+    const profile = await providerInstance?.findUserByCode(code);
+    if (!profile) {
+      throw new UnauthorizedException('Такой профиль не найден');
+    }
+
+    const account = await this.prismaService.account.findFirst({
+      where: {
+        id: profile.id,
+        provider: profile.provider,
+      },
+    });
+
+    let user = account?.userId
+      ? await this.userService.findById(account.userId)
+      : null;
+
+    if (user) {
+      return this.saveSession(req, user);
+    }
+
+    user = await this.userService.create({
+      email: profile.email,
+      password: '',
+      displayName: profile.name,
+      picture: profile.picture,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      method: AuthMethod[profile.provider.toUpperCase()],
+      isVerified: true,
+    });
+    if (!account) {
+      await this.prismaService.account.create({
+        data: {
+          userId: user.id,
+          type: 'oauth',
+          provider: profile.provider,
+          accessToken: profile.access_token,
+          refreshToken: profile.refresh_token,
+          expiresAt: profile.expires_at,
+        },
+      });
+    }
+    return this.saveSession(req, user);
   }
 }
