@@ -8,21 +8,25 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { verify } from 'argon2';
 import { Request, Response } from 'express';
-import { AuthMethod, User } from 'prisma/__generated__';
+import { AuthMethod } from 'prisma/__generated__';
 
+import { EmailConfirmationService } from '@/email-confirmation/email-confirmation.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import { UserService } from '@/user/user.service';
 
 import { LoginDto, RegisterDto } from './dto';
 import { ProviderService } from './provider/provider.service';
+import { SessionService } from './provider/services/session.service';
 
 @Injectable()
 export class AuthService {
   public constructor(
+    private readonly prismaService: PrismaService,
     private readonly userService: UserService,
     private readonly configService: ConfigService,
     private readonly providerService: ProviderService,
-    private readonly prismaService: PrismaService,
+    private readonly emailConfirmationService: EmailConfirmationService,
+    private readonly sessionService: SessionService,
   ) {}
 
   public async register(req: Request, dto: RegisterDto) {
@@ -43,7 +47,11 @@ export class AuthService {
       isVerified: false,
     });
 
-    return this.saveSession(req, newUser);
+    await this.emailConfirmationService.sendVerificationToken(newUser);
+
+    return {
+      message: 'Регистрация произошла успешно, подтвердите свой email',
+    };
   }
 
   public async login(req: Request, dto: LoginDto) {
@@ -60,7 +68,13 @@ export class AuthService {
     if (!isValidPassword) {
       throw new UnauthorizedException('Неверный пароль');
     }
-    return this.saveSession(req, user);
+
+    if (!user.isVerified) {
+      await this.emailConfirmationService.sendVerificationToken(user);
+      throw new UnauthorizedException('Ваша почта не была подтверждена');
+    }
+
+    return this.sessionService.saveSession(req, user);
   }
 
   public async logout(req: Request, res: Response): Promise<void> {
@@ -73,20 +87,6 @@ export class AuthService {
         }
         res.clearCookie(this.configService.getOrThrow<string>('SESSION_NAME'));
         resolve();
-      });
-    });
-  }
-
-  private async saveSession(req: Request, user: User): Promise<{ user: User }> {
-    return new Promise((resolve, reject) => {
-      req.session.userId = user.id;
-      req.session.save((err) => {
-        if (err) {
-          return reject(
-            new InternalServerErrorException('Не удалось сохранить сессию'),
-          );
-        }
-        resolve({ user });
       });
     });
   }
@@ -114,7 +114,7 @@ export class AuthService {
       : null;
 
     if (user) {
-      return this.saveSession(req, user);
+      return this.sessionService.saveSession(req, user);
     }
 
     user = await this.userService.create({
@@ -138,6 +138,6 @@ export class AuthService {
         },
       });
     }
-    return this.saveSession(req, user);
+    return this.sessionService.saveSession(req, user);
   }
 }
