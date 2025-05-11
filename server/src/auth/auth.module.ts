@@ -11,6 +11,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { ProviderModule } from './provider/provider.module';
 import { SessionService } from './provider/services/session.service';
+import { TwoFactorAuthService } from './two-factor-auth/two-factor-auth.service';
 
 @Module({
   imports: [
@@ -27,6 +28,12 @@ import { SessionService } from './provider/services/session.service';
     EmailConfirmationModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService, MailService, SessionService],
+  providers: [
+    AuthService,
+    UserService,
+    MailService,
+    SessionService,
+    TwoFactorAuthService,
+  ],
 })
 export class AuthModule {}

@@ -10,7 +10,6 @@ interface ConfirmationTemplateProps {
 const ConfirmationTemplate = ({ domain, token }: ConfirmationTemplateProps) => {
   const confirmLink = `${domain}/auth/verify?token=${token}`;
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return (
     <Html>
         <Body>

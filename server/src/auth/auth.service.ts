@@ -17,6 +17,7 @@ import { UserService } from '@/user/user.service';
 import { LoginDto, RegisterDto } from './dto';
 import { ProviderService } from './provider/provider.service';
 import { SessionService } from './provider/services/session.service';
+import { TwoFactorAuthService } from './two-factor-auth/two-factor-auth.service';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +28,7 @@ export class AuthService {
     private readonly providerService: ProviderService,
     private readonly emailConfirmationService: EmailConfirmationService,
     private readonly sessionService: SessionService,
+    private readonly twoFactorService: TwoFactorAuthService,
   ) {}
 
   public async register(req: Request, dto: RegisterDto) {
@@ -47,7 +49,7 @@ export class AuthService {
       isVerified: false,
     });
 
-    await this.emailConfirmationService.sendVerificationToken(newUser);
+    await this.emailConfirmationService.sendVerificationToken(newUser.email);
 
     return {
       message: 'Регистрация произошла успешно, подтвердите свой email',
@@ -70,8 +72,21 @@ export class AuthService {
     }
 
     if (!user.isVerified) {
-      await this.emailConfirmationService.sendVerificationToken(user);
+      await this.emailConfirmationService.sendVerificationToken(user.email);
       throw new UnauthorizedException('Ваша почта не была подтверждена');
+    }
+
+    if (user.isTwoFactorEnabled) {
+      if (!dto.code) {
+        await this.twoFactorService.sendTwoFactorToken(user.email);
+
+        return {
+          message:
+            'Проверьте вашу почту. Требуется код для двухфакторной аутентификации',
+        };
+      }
+
+      await this.twoFactorService.validateTwoFactorToken(user.email, dto.code);
     }
 
     return this.sessionService.saveSession(req, user);
