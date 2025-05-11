@@ -1,4 +1,8 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import {
+  createParamDecorator,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Request } from 'express';
 import { User } from 'prisma/__generated__';
 
@@ -19,7 +23,7 @@ export const Authorized = createParamDecorator(
     const user = request.user;
 
     if (!user) {
-      throw new Error('Пользователь не аутентифицирован');
+      throw new UnauthorizedException('Пользователь не аутентифицирован');
     }
 
     if (property && !(property in user)) {
