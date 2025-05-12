@@ -1,0 +1,33 @@
+import { cva } from "~/styled-system/css";
+
+export const wrapper = cva({
+  base: {
+    flex: "1 0 auto",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    position: "relative",
+    textAlign: "center",
+  },
+});
+
+export const top = cva({
+  base: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "10px",
+  },
+});
+
+export const link = cva({
+  base: {
+    fontSize: "md",
+    paddingBottom: "3px",
+    lineHeight: "1",
+    _hover: {
+      paddingBottom: "2px",
+      borderBottom: "secondaryBorder",
+    },
+  },
+});
