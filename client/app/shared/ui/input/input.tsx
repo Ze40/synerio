@@ -49,10 +49,6 @@ const Input = ({
     }, 500);
   };
 
-  useEffect(() => {
-    console.log(isFocus);
-  }, [isFocus]);
-
   if (isSecure) {
     return (
       <div className={style.container()}>
@@ -64,7 +60,11 @@ const Input = ({
         <div
           className={`${style.inputBox({ variant, correct: isCorrect, focus: isFocus })} ${className}`}
         >
-          <button type="button" onClick={() => setVisible(!isVisible)}>
+          <button
+            type="button"
+            onClick={() => setVisible(!isVisible)}
+            className={style.iconContainer({ secure: isVisible })}
+          >
             {icon && typeof icon === "string" ? <img src={icon} alt={name} /> : icon}
             {!icon && <Eye />}
           </button>
@@ -97,7 +97,9 @@ const Input = ({
       <div
         className={`${style.inputBox({ variant, correct: isCorrect, focus: isFocus })} ${className}`}
       >
-        {icon && typeof icon === "string" ? <img src={icon} alt={name} /> : icon}
+        <div className={style.iconContainer()}>
+          {icon && typeof icon === "string" ? <img src={icon} alt={name} /> : icon}
+        </div>
         <input
           {...props}
           name={name}

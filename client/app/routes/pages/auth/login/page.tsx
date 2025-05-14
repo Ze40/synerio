@@ -21,6 +21,15 @@ const LoginPage = () => {
           variant={"border"}
           className={style.input()}
         />
+        <Input
+          required
+          validator={emailValidator}
+          name="password"
+          isSecure
+          placeholder="Почта"
+          variant={"border"}
+          className={style.input()}
+        />
       </Form>
     </AuthWrapper>
   );

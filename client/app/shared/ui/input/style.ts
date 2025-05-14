@@ -112,3 +112,28 @@ export const error = cva({
     paddingTop: "3px",
   },
 });
+
+export const iconContainer = cva({
+  base: {
+    borderRadius: "3px",
+    padding: "2px",
+    width: "30px",
+    aspectRatio: "1 / 1",
+    transitionDuration: "0.3s",
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  variants: {
+    secure: {
+      true: {
+        color: "primary",
+        bg: "secondary",
+        transitionDuration: "0.3s",
+      },
+      false: {},
+    },
+  },
+});

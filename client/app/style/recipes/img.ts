@@ -18,7 +18,8 @@ export const logo = cva({
 
 export const inputIcon = cva({
   base: {
+    width: "100%",
+    height: "100%",
     color: "inherit",
-    aspectRatio: "1 / 1",
   },
 });
