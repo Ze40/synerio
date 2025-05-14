@@ -1,13 +1,26 @@
+import { Mail } from "lucide-react";
 import { useFetcher } from "react-router";
-import { css } from "styled-system/css";
 
-import { AuthWrapper } from "@/shared/ui";
+import { AuthWrapper, Input } from "@/shared/ui";
+import { emailValidator } from "@/utils/validators";
+
+import * as style from "./style";
 
 const LoginPage = () => {
   const { Form } = useFetcher();
   return (
     <AuthWrapper type="login">
-      <Form></Form>
+      <Form>
+        <Input
+          required
+          validator={emailValidator}
+          name="email"
+          icon={<Mail size={30} />}
+          placeholder="Почта"
+          variant={"border"}
+          className={style.input()}
+        />
+      </Form>
     </AuthWrapper>
   );
 };

@@ -21,6 +21,8 @@ export default defineConfig({
           lighter: { value: "#f5802c" },
           dark: { value: "#141414" },
           mainGray: { value: "#ababab" },
+          error: { value: "#ff0000" },
+          correct: { value: "#00cc00" },
         },
 
         // Рамки

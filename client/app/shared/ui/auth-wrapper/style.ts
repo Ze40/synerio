@@ -8,6 +8,7 @@ export const wrapper = cva({
     alignItems: "center",
     position: "relative",
     textAlign: "center",
+    gap: "30px",
   },
 });
 
@@ -16,7 +17,7 @@ export const top = cva({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: "10px",
+    gap: "15px",
   },
 });
 
