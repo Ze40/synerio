@@ -6,7 +6,6 @@ export const emailValidator: Validator = (value) => {
   if (!value) return "Это обязательное поле";
 
   if (pattern.test(value)) {
-    console.log(pattern.test(value), value);
     return true;
   }
 

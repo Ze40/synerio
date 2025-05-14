@@ -3,7 +3,7 @@ import { useFetcher } from "react-router";
 
 import { AuthWrapper, Input } from "@/shared/ui";
 import { inputIcon } from "@/style/recipes/img";
-import { emailValidator } from "@/utils/validators";
+import { emailValidator, passwordValidator } from "@/utils/validators";
 
 import * as style from "./style";
 
@@ -23,7 +23,7 @@ const LoginPage = () => {
         />
         <Input
           required
-          validator={emailValidator}
+          validator={passwordValidator}
           name="password"
           isSecure
           placeholder="Пароль"

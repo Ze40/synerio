@@ -3,6 +3,8 @@ import { cva } from "~/styled-system/css";
 export const container = cva({
   base: {
     textAlign: "start",
+    position: "relative",
+    width: "min-content",
   },
 });
 
@@ -103,13 +105,15 @@ export const input = cva({
 
 export const error = cva({
   base: {
+    width: "100%",
     color: "error",
     fontSize: "sm",
     display: "flex",
-    alignItems: "center",
+    alignItems: "start",
     gap: "2px",
     paddingLeft: "5px",
     paddingTop: "3px",
+    lineHeight: "1.1",
   },
 });
 

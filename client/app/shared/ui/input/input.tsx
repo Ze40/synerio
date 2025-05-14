@@ -9,7 +9,7 @@ import {
 
 import { CircleAlert, Eye, type LucideProps } from "lucide-react";
 
-import { useValidator } from "@/shared/hooks";
+import { useValidator } from "@/utils/hooks";
 import type { Validator } from "@/utils/validators";
 
 import * as style from "./style";
@@ -75,6 +75,7 @@ const Input = ({
             type={isVisible ? props.type : "password"}
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
+            onChange={handleChange}
           />
         </div>
         {!!error && (

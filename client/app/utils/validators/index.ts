@@ -1,4 +1,5 @@
 import { emailValidator } from "./email";
+import { passwordValidator } from "./password";
 import type { Validator } from "./types";
 
-export { emailValidator, type Validator };
+export { emailValidator, passwordValidator, type Validator };
