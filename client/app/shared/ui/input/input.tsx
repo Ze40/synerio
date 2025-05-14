@@ -20,7 +20,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   isSecure?: boolean;
   variant: "border";
-  validator?: Validator;
+  validator?: Validator[] | Validator;
 }
 
 const Input = ({
