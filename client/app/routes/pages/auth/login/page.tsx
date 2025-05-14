@@ -11,7 +11,7 @@ const LoginPage = () => {
   const { Form } = useFetcher();
   return (
     <AuthWrapper type="login">
-      <Form>
+      <Form className={style.form()}>
         <Input
           required
           validator={emailValidator}
@@ -26,7 +26,7 @@ const LoginPage = () => {
           validator={emailValidator}
           name="password"
           isSecure
-          placeholder="Почта"
+          placeholder="Пароль"
           variant={"border"}
           className={style.input()}
         />

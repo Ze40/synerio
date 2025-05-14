@@ -25,7 +25,9 @@ const AuthWrapper = ({ children, type }: AuthWrapperProps) => {
       </div>
       {children}
       <Link to={type === "login" ? "/register" : "/login"} className={style.link()}>
-        Нет аккаунта? <Attention>Войти</Attention>
+        {type === "login"
+          ? `Нет аккаунта? ${(<Attention>Зарегистрироваться</Attention>)}`
+          : `Уже еть аккаунт? ${(<Attention>Войти</Attention>)}`}
       </Link>
     </div>
   );

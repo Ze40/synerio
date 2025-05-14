@@ -6,3 +6,12 @@ export const input = cva({
     color: "gray",
   },
 });
+
+export const form = cva({
+  base: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "15px",
+  },
+});
