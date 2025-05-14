@@ -1,7 +1,10 @@
 import { Mail } from "lucide-react";
 import { useFetcher } from "react-router";
+import { css } from "~/styled-system/css";
 
-import { AuthWrapper, Input } from "@/shared/ui";
+import { AuthServices } from "@/feat";
+import { AuthWrapper, Input, Line } from "@/shared/ui";
+import { button } from "@/style/recipes/button";
 import { inputIcon } from "@/style/recipes/img";
 import { emailValidator, passwordValidator } from "@/utils/validators";
 
@@ -30,6 +33,18 @@ const LoginPage = () => {
           variant={"border"}
           className={style.input()}
         />
+        <button
+          type={"submit"}
+          className={`${button({ variant: "primary", size: "big" })} ${css({ width: "100%" })}`}
+        >
+          Войти
+        </button>
+        <div className={style.lines()}>
+          <Line weigth={2} length={30} color="gray" />
+          или
+          <Line weigth={2} length={30} color="gray" />
+        </div>
+        <AuthServices />
       </Form>
     </AuthWrapper>
   );

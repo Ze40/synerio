@@ -15,3 +15,11 @@ export const form = cva({
     gap: "15px",
   },
 });
+
+export const lines = cva({
+  base: {
+    display: "flex",
+    alignItems: "center",
+    gap: "5px",
+  },
+});
