@@ -1,3 +1,4 @@
+import { useClient } from "./useClient";
 import { useValidator } from "./useValidator";
 
-export { useValidator };
+export { useValidator, useClient };
