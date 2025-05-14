@@ -12,6 +12,8 @@ export const inputBox = cva({
     alignItems: "center",
     gap: "5px",
     position: "relative",
+    transitionDuration: "0.3s",
+    fontWeight: 500,
   },
   variants: {
     variant: {
@@ -19,6 +21,13 @@ export const inputBox = cva({
         border: "grayBorder",
         padding: "15px",
         borderRadius: "10px",
+
+        _hover: {
+          border: "secondaryBorder",
+          color: "secondary",
+          scale: "1.01",
+          transitionDuration: "0.3s",
+        },
       },
     },
     correct: {
@@ -32,7 +41,46 @@ export const inputBox = cva({
       },
       undefined: {},
     },
+
+    focus: {
+      true: {
+        color: "secondary",
+      },
+      false: {
+        color: "gray",
+      },
+    },
   },
+
+  compoundVariants: [
+    {
+      correct: true,
+      focus: [true, false],
+      variant: ["border"],
+      css: {
+        color: "correct",
+        borderColor: "correct",
+        _hover: {
+          color: "correct",
+          borderColor: "correct",
+        },
+      },
+    },
+    {
+      correct: false,
+      focus: [true, false],
+      variant: ["border"],
+
+      css: {
+        color: "error",
+        borderColor: "error",
+        _hover: {
+          color: "error",
+          borderColor: "error",
+        },
+      },
+    },
+  ],
 });
 
 export const label = cva({

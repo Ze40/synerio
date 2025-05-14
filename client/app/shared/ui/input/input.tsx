@@ -2,6 +2,7 @@ import {
   type ChangeEvent,
   type InputHTMLAttributes,
   type ReactElement,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -35,6 +36,7 @@ const Input = ({
 }: InputProps) => {
   const { error, isCorrect, validate } = useValidator(validator);
   const [isVisible, setVisible] = useState<boolean>(false);
+  const [isFocus, setIsFocus] = useState<boolean>(false);
   const timeRef = useRef<number | null>(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,6 +49,10 @@ const Input = ({
     }, 500);
   };
 
+  useEffect(() => {
+    console.log(isFocus);
+  }, [isFocus]);
+
   if (isSecure) {
     return (
       <div className={style.container()}>
@@ -55,7 +61,9 @@ const Input = ({
             {label}
           </label>
         )}
-        <div className={`${style.inputBox({ variant, correct: isCorrect })} ${className}`}>
+        <div
+          className={`${style.inputBox({ variant, correct: isCorrect, focus: isFocus })} ${className}`}
+        >
           <button type="button" onClick={() => setVisible(!isVisible)}>
             {icon && typeof icon === "string" ? <img src={icon} alt={name} /> : icon}
             {!icon && <Eye />}
@@ -65,6 +73,8 @@ const Input = ({
             name={name}
             className={style.input()}
             type={isVisible ? props.type : "password"}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
           />
         </div>
         {!!error && (
@@ -84,9 +94,18 @@ const Input = ({
           {label}
         </label>
       )}
-      <div className={`${style.inputBox({ variant, correct: isCorrect })} ${className}`}>
+      <div
+        className={`${style.inputBox({ variant, correct: isCorrect, focus: isFocus })} ${className}`}
+      >
         {icon && typeof icon === "string" ? <img src={icon} alt={name} /> : icon}
-        <input {...props} name={name} className={style.input()} onChange={handleChange} />
+        <input
+          {...props}
+          name={name}
+          className={style.input()}
+          onChange={handleChange}
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
+        />
       </div>
       {!!error && (
         <div className={style.error()}>

@@ -15,3 +15,10 @@ export const logo = cva({
     },
   },
 });
+
+export const inputIcon = cva({
+  base: {
+    color: "inherit",
+    aspectRatio: "1 / 1",
+  },
+});
