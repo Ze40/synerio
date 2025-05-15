@@ -19,10 +19,7 @@ export class CreateUserDto {
   password: string;
 
   @IsString({ message: 'Имя пользователя должно быть строкой' })
-  firstName: string;
-
-  @IsString({ message: 'Фамилия пользователя должна быть строкой' })
-  lastName: string;
+  displayName: string;
 
   @IsString({ message: 'URL изображения должен быть строкой' })
   picture: string;

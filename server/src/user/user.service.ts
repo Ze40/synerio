@@ -68,8 +68,7 @@ export class UserService {
       },
       data: {
         email: dto.email,
-        firstName: dto.firstName,
-        lastName: dto.lastName,
+        displayName: dto.name,
         isTwoFactorEnabled: dto.isTwoFactorEnabled,
       },
     });

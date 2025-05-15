@@ -28,6 +28,11 @@ class AuthService {
 
     return response;
   }
+
+  public async oauthByProvider(privider: "google" | "yandex") {
+    const response = await api.get<{ url: string }>(`auth/oauth/connect/${privider}`);
+    return response;
+  }
 }
 
 export const authService = new AuthService();
