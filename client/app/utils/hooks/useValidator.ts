@@ -9,7 +9,6 @@ export const useValidator = (validator: Validator | Validator[]) => {
   const validate = (value: string) => {
     if (!Array.isArray(validator)) {
       const result = validator(value);
-
       if (result === true) {
         setError("");
         setIsCorrect(true);
@@ -18,17 +17,22 @@ export const useValidator = (validator: Validator | Validator[]) => {
         setIsCorrect(false);
       }
     } else {
-      validator.forEach((val) => {
+      let hasError = false;
+
+      for (const val of validator) {
         const result = val(value);
         if (result !== true) {
           setError(result);
           setIsCorrect(false);
-          return;
+          hasError = true;
+          break;
         }
-      });
+      }
 
-      setError("");
-      setIsCorrect(true);
+      if (!hasError) {
+        setError("");
+        setIsCorrect(true);
+      }
     }
   };
 

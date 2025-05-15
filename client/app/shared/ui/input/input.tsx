@@ -2,6 +2,7 @@ import {
   type ChangeEvent,
   type InputHTMLAttributes,
   type ReactElement,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -23,6 +24,7 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChan
   validator?: Validator[] | Validator;
   containerClassName?: string;
   onChange?: (value: string | null, name: string) => void;
+  value?: string;
 }
 
 const Input = ({
@@ -34,12 +36,14 @@ const Input = ({
   isSecure = false,
   validator = () => true,
   containerClassName,
+  value,
   onChange,
   ...props
 }: InputProps) => {
   const { error, isCorrect, validate } = useValidator(validator);
   const [isVisible, setVisible] = useState<boolean>(false);
   const [isFocus, setIsFocus] = useState<boolean>(false);
+  const [val, setVal] = useState<string | null>(value || null);
   const timeout = useTimeout();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -47,15 +51,19 @@ const Input = ({
     const value = e.target.value;
     timeout(() => {
       validate(value);
-      if (onChange) {
-        if (isCorrect) {
-          onChange(null, e.target.name);
-        } else {
-          onChange(value, e.target.name);
-        }
-      }
     }, 300);
+    setVal(value || null);
   };
+
+  useEffect(() => {
+    if (onChange) {
+      if (!isCorrect) {
+        onChange(null, name);
+      } else {
+        onChange(val, name);
+      }
+    }
+  }, [isCorrect, val]);
 
   if (isSecure) {
     return (
@@ -82,6 +90,7 @@ const Input = ({
             {!icon && <Eye />}
           </button>
           <input
+            value={val || ""}
             ref={inputRef}
             {...props}
             name={name}
