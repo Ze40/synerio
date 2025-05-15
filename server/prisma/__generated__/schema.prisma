@@ -14,8 +14,9 @@ model User {
   email    String @unique
   password String
 
-  displayName String
-  picture     String?
+  firstName String
+  lastName  String
+  picture   String?
 
   role UserRole @default(REGULAR)
 

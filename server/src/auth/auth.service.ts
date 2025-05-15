@@ -43,7 +43,8 @@ export class AuthService {
     const newUser = await this.userService.create({
       email: dto.email,
       password: dto.password,
-      displayName: dto.name,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
       picture: '',
       method: AuthMethod.CREDENTIALS,
       isVerified: false,
@@ -135,7 +136,8 @@ export class AuthService {
     user = await this.userService.create({
       email: profile.email,
       password: '',
-      displayName: profile.name,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
       picture: profile.picture,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       method: AuthMethod[profile.provider.toUpperCase()],
