@@ -4,11 +4,13 @@ import { Mail } from "lucide-react";
 import { useFetcher } from "react-router";
 import { css } from "~/styled-system/css";
 
-import { AuthServices, Captcha } from "@/feat";
+import { Captcha, OAuthServices } from "@/feat";
+import { authService } from "@/feat/auth/services";
 import { AuthWrapper, Input, Line, Toast } from "@/shared/ui";
 import { button } from "@/style/recipes/button";
 import { inputIcon } from "@/style/recipes/img";
-import { useClient, useTimeout } from "@/utils/hooks";
+import { FetchError } from "@/utils/fetch";
+import { useTimeout } from "@/utils/hooks";
 import {
   emailValidator,
   isMatchValidator,
@@ -16,7 +18,44 @@ import {
   passwordValidator,
 } from "@/utils/validators";
 
+import type { Route } from "./+types/page";
 import * as style from "./style";
+
+export const clientAction = async ({ request }: Route.ClientActionArgs) => {
+  const formData = await request.formData();
+  const email = formData.get("email");
+  const password = formData.get("password");
+  const captcha = formData.get("captcha");
+  const firstName = formData.get("firstName");
+  const passwordRepeat = formData.get("passwordRepeat");
+  const lastName = formData.get("lastName");
+
+  if (!email || !password || !firstName || !lastName || !passwordRepeat) {
+    console.log(email, password, firstName, lastName, passwordRepeat);
+    return { error: "Все поля обязательны!" };
+  }
+
+  const name = firstName.toString() + " " + lastName.toString();
+
+  try {
+    const user = await authService.register(
+      {
+        email: email.toString(),
+        password: password.toString(),
+        name: name,
+        passwordRepeat: passwordRepeat.toString(),
+      },
+      captcha?.toString()
+    );
+
+    return user;
+  } catch (error) {
+    if (error instanceof FetchError) {
+      return { error: error.message };
+    }
+    return { error: "Неизвестная ошибка" };
+  }
+};
 
 const RegisterPage = () => {
   const fetcher = useFetcher();
@@ -24,6 +63,14 @@ const RegisterPage = () => {
   const [captchaValue, setCaptchaValue] = useState<string | null>("");
   const [error, setError] = useState<string | null>(null);
   const timeout = useTimeout();
+
+  useEffect(() => {
+    console.log(fetcher.data);
+    if (fetcher.data && "error" in fetcher.data) {
+      setError(fetcher.data.error as string);
+      return;
+    }
+  }, [fetcher.data]);
 
   useEffect(() => {
     if (captchaValue) {
@@ -43,10 +90,6 @@ const RegisterPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -56,29 +99,23 @@ const RegisterPage = () => {
         return;
       }
     }
-
-    setIsCaptcha(true);
-
     if (!captchaValue) {
-      setError("Пожалуйста, подтвердите, что вы не робот");
+      setError("Пожалуйста, пройдите капчу");
+      setIsCaptcha(true);
       return;
     }
 
-    const form = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value !== null) {
-        form.append(key, value);
-      }
-    });
-
     if (captchaValue) {
-      form.append("captcha", captchaValue);
+      formData["captcha"] = captchaValue;
     }
 
-    fetcher.submit(form, {
-      method: "post",
-      action: "/login",
-    });
+    fetcher.submit(
+      { ...formData },
+      {
+        method: "post",
+        action: "/register",
+      }
+    );
   };
 
   return (
@@ -146,7 +183,7 @@ const RegisterPage = () => {
           или
           <Line weigth={2} length={30} color="gray" />
         </div>
-        <AuthServices className={css({ gridColumn: "1 / 3" })} />
+        <OAuthServices className={css({ gridColumn: "1 / 3" })} />
         <Captcha
           siteKey={import.meta.env.VITE_GOOGLE_RECAPTCHA_SITE_KEY as string}
           isOpen={isCaptcha}
