@@ -122,7 +122,7 @@ const RegisterPage = () => {
     <AuthWrapper type="register">
       <form className={style.form()} onSubmit={handleSubmit}>
         <Input
-          className={style.input({ size: "compact" })}
+          className={style.input()}
           containerClassName={style.inputContainer({ pos: "twoOnLine" })}
           name="firstName"
           variant="border"
@@ -131,7 +131,7 @@ const RegisterPage = () => {
           onChange={handleChange}
         />
         <Input
-          className={style.input({ size: "compact" })}
+          className={style.input()}
           containerClassName={style.inputContainer({ pos: "twoOnLine" })}
           name="lastName"
           variant="border"
@@ -157,7 +157,7 @@ const RegisterPage = () => {
           isSecure
           placeholder="Пароль"
           variant={"border"}
-          className={style.input({ size: "compact" })}
+          className={style.input()}
           containerClassName={style.inputContainer({ pos: "twoOnLine" })}
           onChange={handleChange}
         />
@@ -168,7 +168,7 @@ const RegisterPage = () => {
           isSecure
           placeholder="Повторите пароль"
           variant={"border"}
-          className={style.input({ size: "compact" })}
+          className={style.input()}
           containerClassName={style.inputContainer({ pos: "twoOnLine" })}
           onChange={handleChange}
         />

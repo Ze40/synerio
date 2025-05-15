@@ -5,13 +5,6 @@ export const input = cva({
     width: "100%",
     color: "gray",
   },
-  variants: {
-    size: {
-      compact: {
-        width: "200px",
-      },
-    },
-  },
 });
 
 export const inputContainer = cva({

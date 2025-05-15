@@ -2,7 +2,8 @@ import { cva } from "~/styled-system/css";
 
 export const wrapper = cva({
   base: {
-    flex: "1 0 auto",
+    flex: "1 1 auto",
+    maxWidth: "50%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

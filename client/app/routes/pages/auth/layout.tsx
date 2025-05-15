@@ -15,7 +15,7 @@ export function meta() {
 
 const AuthLayout = () => {
   const { pathname } = useLocation();
-  const [form, setForm] = useState<"login" | "register">("login");
+  const [form, setForm] = useState<"login" | "register" | null>(null);
 
   useEffect(() => {
     if (pathname === "/login") setForm("login");
@@ -23,10 +23,23 @@ const AuthLayout = () => {
   }, [pathname]);
 
   return (
-    <div className={style.container({ form })}>
-      <Outlet />
-      <AuthSpace />
-    </div>
+    <>
+      {form !== null && (
+        <div className={style.container()}>
+          {form === "login" ? (
+            <>
+              <Outlet />
+              <AuthSpace />
+            </>
+          ) : (
+            <>
+              <AuthSpace />
+              <Outlet />
+            </>
+          )}
+        </div>
+      )}
+    </>
   );
 };
 

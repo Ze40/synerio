@@ -39,4 +39,6 @@ const AuthWrapper = memo(({ children, type }: AuthWrapperProps) => {
   );
 });
 
+AuthWrapper.displayName = "AuthWrapper";
+
 export default AuthWrapper;

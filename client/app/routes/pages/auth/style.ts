@@ -12,14 +12,4 @@ export const container = cva({
     margin: "20px auto",
     padding: "40px 0",
   },
-  variants: {
-    form: {
-      login: {
-        flexDirection: "row",
-      },
-      register: {
-        flexDirection: "row-reverse",
-      },
-    },
-  },
 });
