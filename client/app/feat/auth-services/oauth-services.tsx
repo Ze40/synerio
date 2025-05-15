@@ -6,7 +6,7 @@ interface AuthServicesProps {
   className?: string;
 }
 
-const AuthServices = ({ className }: AuthServicesProps) => {
+const OAuthServices = ({ className }: AuthServicesProps) => {
   return (
     <div className={`${style.container()} ${className}`}>
       <GoogleService />
@@ -15,4 +15,4 @@ const AuthServices = ({ className }: AuthServicesProps) => {
   );
 };
 
-export default AuthServices;
+export default OAuthServices;

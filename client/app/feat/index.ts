@@ -1,4 +1,4 @@
-import AuthServices from "./auth-services/auth-services";
+import OAuthServices from "./auth-services/oauth-services";
 import Captcha from "./captcha/captcha";
 
-export { AuthServices, Captcha };
+export { OAuthServices, Captcha };

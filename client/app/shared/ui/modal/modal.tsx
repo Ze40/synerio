@@ -10,7 +10,7 @@ import * as style from "./style";
 interface ModalProps {
   className?: string;
   children: ReactElement;
-  onClose: () => void;
+  onClose?: () => void;
   title?: string;
   isClosing?: boolean;
   isOpen: boolean;

@@ -32,6 +32,8 @@ export const header = cva({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: "16px",
+    fontWeight: "500",
+    fontSize: "lg",
   },
 });
 

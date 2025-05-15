@@ -1,24 +1,81 @@
 import { useEffect, useState } from "react";
 
 import { Mail } from "lucide-react";
-import { useFetcher } from "react-router";
+import { redirect, useFetcher } from "react-router";
 import { css } from "~/styled-system/css";
 
-import { AuthServices, Captcha } from "@/feat";
-import { AuthWrapper, Input, Line, Toast } from "@/shared/ui";
+import { Captcha, OAuthServices } from "@/feat";
+import { authService } from "@/feat/auth/services";
+import { AuthWrapper, Input, Line, Modal, Toast } from "@/shared/ui";
 import { button } from "@/style/recipes/button";
 import { inputIcon } from "@/style/recipes/img";
+import { FetchError } from "@/utils/fetch";
 import { useTimeout } from "@/utils/hooks";
 import { emailValidator, passwordValidator } from "@/utils/validators";
 
+import type { Route } from "./+types/page";
 import * as style from "./style";
+
+export const clientAction = async ({ request }: Route.ClientActionArgs) => {
+  const formData = await request.formData();
+  const email = formData.get("email");
+  const password = formData.get("password");
+  const code = formData.get("code");
+  const captcha = formData.get("captcha");
+
+  if (!email || !password) {
+    return { error: "Все поля обязательны!" };
+  }
+
+  if (code) {
+    try {
+      const user = await authService.login(
+        { email: email.toString(), password: password.toString(), code: code.toString() },
+        captcha?.toString()
+      );
+
+      return redirect("/feat");
+    } catch (error) {
+      if (error instanceof FetchError) {
+        return { error: error.message };
+      }
+      return { error: "Неизвестная ошибка" };
+    }
+  }
+
+  try {
+    const user = await authService.login(
+      { email: email.toString(), password: password.toString() },
+      captcha?.toString()
+    );
+
+    return user;
+  } catch (error) {
+    if (error instanceof FetchError) {
+      return { error: error.message };
+    }
+    return { error: "Неизвестная ошибка" };
+  }
+};
 
 const LoginPage = () => {
   const fetcher = useFetcher();
   const [isCaptcha, setIsCaptcha] = useState<boolean>(false);
   const [captchaValue, setCaptchaValue] = useState<string | null>("");
   const [error, setError] = useState<string | null>(null);
+  const [isTwoFactor, setIsTwoFactor] = useState<boolean>(false);
   const timeout = useTimeout();
+
+  useEffect(() => {
+    if (fetcher.data && "error" in fetcher.data) {
+      setError(fetcher.data.error as string);
+      return;
+    }
+    if (fetcher.data && "message" in fetcher.data) {
+      setIsTwoFactor(true);
+      return;
+    }
+  }, [fetcher.data]);
 
   useEffect(() => {
     if (captchaValue) {
@@ -43,34 +100,28 @@ const LoginPage = () => {
         return;
       }
     }
-
-    setIsCaptcha(true);
-
     if (!captchaValue) {
-      setError("Пожалуйста, подтвердите, что вы не робот");
+      setError("Пожалуйста, пройдите капчу");
+      setIsCaptcha(true);
       return;
     }
 
-    const form = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value !== null) {
-        form.append(key, value);
-      }
-    });
-
     if (captchaValue) {
-      form.append("captcha", captchaValue);
+      formData["captcha"] = captchaValue;
     }
 
-    fetcher.submit(form, {
-      method: "post",
-      action: "/login",
-    });
+    fetcher.submit(
+      { ...formData },
+      {
+        method: "post",
+        action: "/login",
+      }
+    );
   };
 
   return (
     <AuthWrapper type="login">
-      <form className={style.form()} onSubmit={handleSubmit}>
+      <fetcher.Form className={style.form()} method="post">
         <Input
           required
           validator={emailValidator}
@@ -93,6 +144,7 @@ const LoginPage = () => {
         />
         <button
           type={"submit"}
+          onClick={handleSubmit}
           className={`${button({ variant: "primary", size: "big" })} ${css({ width: "100%" })}`}
         >
           Войти
@@ -102,10 +154,10 @@ const LoginPage = () => {
           или
           <Line weigth={2} length={30} color="gray" />
         </div>
-        <AuthServices />
+        <OAuthServices />
         <Captcha
           siteKey={import.meta.env.VITE_GOOGLE_RECAPTCHA_SITE_KEY as string}
-          isOpen={isCaptcha}
+          isOpen={isCaptcha && !captchaValue}
           onChange={(token) => setCaptchaValue(token)}
         />
         <Toast
@@ -114,7 +166,25 @@ const LoginPage = () => {
           title="Ошибка:"
           massage={error !== null ? error : ""}
         />
-      </form>
+        <Modal title="Подтверждение" isClosing={false} isOpen={isTwoFactor}>
+          <div className={style.code()}>
+            <Input
+              containerClassName={style.codeInput()}
+              name="code"
+              variant="border"
+              placeholder="Введите код"
+              onChange={(value) => setFormData((prev) => ({ ...prev, ["code"]: value }))}
+            />
+            <button
+              type="button"
+              className={`${button({ variant: "primary", size: "big" })} ${css({ width: "100%" })}`}
+              onClick={handleSubmit}
+            >
+              Отправить
+            </button>
+          </div>
+        </Modal>
+      </fetcher.Form>
     </AuthWrapper>
   );
 };

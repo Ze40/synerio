@@ -23,3 +23,19 @@ export const lines = cva({
     gap: "5px",
   },
 });
+
+export const code = cva({
+  base: {
+    display: "flex",
+    width: "100%",
+    flexDir: "column",
+    position: "relative",
+    gap: "20px",
+  },
+});
+
+export const codeInput = cva({
+  base: {
+    width: "100%",
+  },
+});
