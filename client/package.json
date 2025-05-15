@@ -34,6 +34,7 @@
     "@types/react-google-recaptcha": "^2.1.9",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.26.0",
+    "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.0.0",
     "tailwindcss": "^4.1.4",
