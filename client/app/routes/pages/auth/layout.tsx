@@ -4,10 +4,9 @@ import { Outlet, useLocation } from "react-router";
 
 import { AuthSpace } from "@/shared/ui";
 
-import type { Route } from "./+types/layout";
 import * as style from "./style";
 
-export function meta({}: Route.MetaArgs) {
+export function meta() {
   return [
     { title: "Synerio | Welcome" },
     { name: "description", content: "Welcome to React Router!" },

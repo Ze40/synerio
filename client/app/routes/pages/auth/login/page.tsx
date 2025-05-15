@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Mail } from "lucide-react";
-import { redirect, useFetcher } from "react-router";
+import { useFetcher, useNavigate } from "react-router";
 import { css } from "~/styled-system/css";
 
 import { Captcha, OAuthServices } from "@/feat";
@@ -34,7 +34,7 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
         captcha?.toString()
       );
 
-      return redirect("/feat");
+      return user;
     } catch (error) {
       if (error instanceof FetchError) {
         return { error: error.message };
@@ -65,6 +65,7 @@ const LoginPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [isTwoFactor, setIsTwoFactor] = useState<boolean>(false);
   const timeout = useTimeout();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (fetcher.data && "error" in fetcher.data) {
@@ -74,6 +75,9 @@ const LoginPage = () => {
     if (fetcher.data && "message" in fetcher.data) {
       setIsTwoFactor(true);
       return;
+    }
+    if (fetcher.data) {
+      navigate("/feat");
     }
   }, [fetcher.data]);
 

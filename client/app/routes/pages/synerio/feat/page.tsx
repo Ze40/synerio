@@ -1,9 +1,5 @@
-interface FeatPageProps {
-  className?: string;
-}
-
-const FeatPage = ({ className }: FeatPageProps) => {
-  return <div className={className}></div>;
+const FeatPage = () => {
+  return <div></div>;
 };
 
 export default FeatPage;
