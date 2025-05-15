@@ -2,9 +2,13 @@ import GoogleService from "./google-service/google-service";
 import * as style from "./style";
 import YandexService from "./yandex-service/yandex-service";
 
-const AuthServices = () => {
+interface AuthServicesProps {
+  className?: string;
+}
+
+const AuthServices = ({ className }: AuthServicesProps) => {
   return (
-    <div className={style.container()}>
+    <div className={`${style.container()} ${className}`}>
       <GoogleService />
       <YandexService />
     </div>

@@ -42,5 +42,7 @@ export const lines = cva({
     display: "flex",
     alignItems: "center",
     gap: "5px",
+    gridColumn: "1 / 3",
+    justifyContent: "center",
   },
 });

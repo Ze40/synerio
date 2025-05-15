@@ -4,8 +4,8 @@ import { Mail } from "lucide-react";
 import { useFetcher } from "react-router";
 import { css } from "~/styled-system/css";
 
-import { Captcha } from "@/feat";
-import { AuthWrapper, Input, Toast } from "@/shared/ui";
+import { AuthServices, Captcha } from "@/feat";
+import { AuthWrapper, Input, Line, Toast } from "@/shared/ui";
 import { button } from "@/style/recipes/button";
 import { inputIcon } from "@/style/recipes/img";
 import { useClient, useTimeout } from "@/utils/hooks";
@@ -120,8 +120,8 @@ const RegisterPage = () => {
           isSecure
           placeholder="Пароль"
           variant={"border"}
-          className={style.input()}
-          containerClassName={style.inputContainer()}
+          className={style.input({ size: "compact" })}
+          containerClassName={style.inputContainer({ pos: "twoOnLine" })}
           onChange={handleChange}
         />
         <Input
@@ -131,8 +131,8 @@ const RegisterPage = () => {
           isSecure
           placeholder="Повторите пароль"
           variant={"border"}
-          className={style.input()}
-          containerClassName={style.inputContainer()}
+          className={style.input({ size: "compact" })}
+          containerClassName={style.inputContainer({ pos: "twoOnLine" })}
           onChange={handleChange}
         />
         <button
@@ -141,6 +141,12 @@ const RegisterPage = () => {
         >
           Зарегистрироваться
         </button>
+        <div className={style.lines()}>
+          <Line weigth={2} length={30} color="gray" />
+          или
+          <Line weigth={2} length={30} color="gray" />
+        </div>
+        <AuthServices className={css({ gridColumn: "1 / 3" })} />
         <Captcha
           siteKey={import.meta.env.VITE_GOOGLE_RECAPTCHA_SITE_KEY as string}
           isOpen={isCaptcha}
