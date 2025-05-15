@@ -1,4 +1,10 @@
-import { type ChangeEvent, type InputHTMLAttributes, type ReactElement, useState } from "react";
+import {
+  type ChangeEvent,
+  type InputHTMLAttributes,
+  type ReactElement,
+  useRef,
+  useState,
+} from "react";
 
 import { CircleAlert, Eye } from "lucide-react";
 
@@ -35,6 +41,7 @@ const Input = ({
   const [isVisible, setVisible] = useState<boolean>(false);
   const [isFocus, setIsFocus] = useState<boolean>(false);
   const timeout = useTimeout();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -61,6 +68,9 @@ const Input = ({
           </label>
         )}
         <div
+          onClick={() => {
+            inputRef.current?.focus();
+          }}
           className={`${style.inputBox({ variant, correct: isCorrect, focus: isFocus })} ${className}`}
         >
           <button
@@ -72,6 +82,7 @@ const Input = ({
             {!icon && <Eye />}
           </button>
           <input
+            ref={inputRef}
             {...props}
             name={name}
             className={style.input()}
@@ -101,6 +112,9 @@ const Input = ({
         </label>
       )}
       <div
+        onClick={() => {
+          inputRef.current?.focus();
+        }}
         className={`${style.inputBox({ variant, correct: isCorrect, focus: isFocus })} ${className}`}
       >
         {icon && (
@@ -109,6 +123,7 @@ const Input = ({
           </div>
         )}
         <input
+          ref={inputRef}
           {...props}
           name={name}
           className={style.input()}
