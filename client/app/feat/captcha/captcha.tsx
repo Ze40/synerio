@@ -1,6 +1,6 @@
 import ReCAPTCHA from "react-google-recaptcha";
 
-import Modal from "../modal/modal";
+import Modal from "../../shared/ui/modal/modal";
 import * as style from "./style";
 
 interface CaptchaProps {

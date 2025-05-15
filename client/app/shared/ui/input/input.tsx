@@ -8,7 +8,7 @@ import {
 
 import { CircleAlert, Eye } from "lucide-react";
 
-import { useValidator } from "@/utils/hooks";
+import { useTimeout, useValidator } from "@/utils/hooks";
 import type { Validator } from "@/utils/validators";
 
 import * as style from "./style";
@@ -41,13 +41,11 @@ const Input = ({
   const [isVisible, setVisible] = useState<boolean>(false);
   const [isFocus, setIsFocus] = useState<boolean>(false);
   const timeRef = useRef<number | null>(null);
+  const timeout = useTimeout();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    if (timeRef.current) {
-      clearTimeout(timeRef.current);
-    }
-    timeRef.current = window.setTimeout(() => {
+    timeout(() => {
       validate(value);
 
       if (onChange) {
