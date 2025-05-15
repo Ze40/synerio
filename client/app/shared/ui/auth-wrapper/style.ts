@@ -9,6 +9,7 @@ export const wrapper = cva({
     position: "relative",
     textAlign: "center",
     gap: "30px",
+    maxHeight: "100%",
   },
 });
 

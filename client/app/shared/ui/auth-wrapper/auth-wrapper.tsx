@@ -23,7 +23,7 @@ const AuthWrapper = ({ children, type }: AuthWrapperProps) => {
           Добро пожаловать в <Attention>SYNERIO</Attention>
         </p>
       </div>
-      {children}
+      <div>{children}</div>
       <Link to={type === "login" ? "/register" : "/login"} className={style.link()}>
         {type === "login" ? (
           <>

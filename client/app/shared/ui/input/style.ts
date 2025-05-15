@@ -4,7 +4,6 @@ export const container = cva({
   base: {
     textAlign: "start",
     position: "relative",
-    width: "min-content",
   },
 });
 

@@ -22,6 +22,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   isSecure?: boolean;
   variant: "border";
   validator?: Validator[] | Validator;
+  containerClassName?: string;
 }
 
 const Input = ({
@@ -32,6 +33,7 @@ const Input = ({
   variant,
   isSecure = false,
   validator = () => true,
+  containerClassName,
   ...props
 }: InputProps) => {
   const { error, isCorrect, validate } = useValidator(validator);
@@ -51,7 +53,7 @@ const Input = ({
 
   if (isSecure) {
     return (
-      <div className={style.container()}>
+      <div className={`${style.container()} ${containerClassName}`}>
         {label && (
           <label htmlFor={name} className={style.label()}>
             {label}
@@ -89,7 +91,7 @@ const Input = ({
   }
 
   return (
-    <div className={style.container()}>
+    <div className={`${style.container()} ${containerClassName}`}>
       {label && (
         <label htmlFor={name} className={style.label()}>
           {label}
@@ -98,9 +100,11 @@ const Input = ({
       <div
         className={`${style.inputBox({ variant, correct: isCorrect, focus: isFocus })} ${className}`}
       >
-        <div className={style.iconContainer()}>
-          {icon && typeof icon === "string" ? <img src={icon} alt={name} /> : icon}
-        </div>
+        {icon && (
+          <div className={style.iconContainer()}>
+            {typeof icon === "string" ? <img src={icon} alt={name} /> : icon}
+          </div>
+        )}
         <input
           {...props}
           name={name}
