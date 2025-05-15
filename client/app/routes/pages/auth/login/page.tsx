@@ -14,8 +14,8 @@ import { emailValidator, passwordValidator } from "@/utils/validators";
 import * as style from "./style";
 
 const LoginPage = () => {
-  const { Form } = useFetcher();
-  const [isCaptcha, setIsCaptcha] = useState<boolean>(true);
+  const fetcher = useFetcher();
+  const [isCaptcha, setIsCaptcha] = useState<boolean>(false);
   const [captchaValue, setCaptchaValue] = useState<string | null>("");
   const timeout = useTimeout();
 
@@ -33,17 +33,46 @@ const LoginPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
     for (const key in formData) {
       if (formData[key] === null) {
+        console.error("Все поля должны быть заполнены");
         return;
       }
     }
+
+    setIsCaptcha(true);
+
+    if (!captchaValue) {
+      console.error("Пожалуйста, подтвердите, что вы не робот");
+      return;
+    }
+
+    const form = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value !== null) {
+        form.append(key, value);
+      }
+    });
+
+    if (captchaValue) {
+      form.append("captcha", captchaValue);
+    }
+
+    fetcher.submit(form, {
+      method: "post",
+      action: "/login",
+    });
   };
 
   return (
     <AuthWrapper type="login">
-      <Form className={style.form()} onSubmit={handleSubmit}>
+      <form className={style.form()} onSubmit={handleSubmit}>
         <Input
           required
           validator={emailValidator}
@@ -81,7 +110,7 @@ const LoginPage = () => {
           isOpen={isCaptcha}
           onChange={(token) => setCaptchaValue(token)}
         />
-      </Form>
+      </form>
     </AuthWrapper>
   );
 };

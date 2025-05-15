@@ -1,10 +1,4 @@
-import {
-  type ChangeEvent,
-  type InputHTMLAttributes,
-  type ReactElement,
-  useRef,
-  useState,
-} from "react";
+import { type ChangeEvent, type InputHTMLAttributes, type ReactElement, useState } from "react";
 
 import { CircleAlert, Eye } from "lucide-react";
 
@@ -40,22 +34,20 @@ const Input = ({
   const { error, isCorrect, validate } = useValidator(validator);
   const [isVisible, setVisible] = useState<boolean>(false);
   const [isFocus, setIsFocus] = useState<boolean>(false);
-  const timeRef = useRef<number | null>(null);
   const timeout = useTimeout();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     timeout(() => {
       validate(value);
-
       if (onChange) {
-        if (error) {
+        if (isCorrect) {
           onChange(null, e.target.name);
         } else {
           onChange(value, e.target.name);
         }
       }
-    }, 500);
+    }, 300);
   };
 
   if (isSecure) {
