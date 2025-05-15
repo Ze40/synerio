@@ -1,4 +1,4 @@
-import type { ReactElement } from "react";
+import { type ReactElement, memo } from "react";
 
 import { Link } from "react-router";
 
@@ -13,7 +13,7 @@ interface AuthWrapperProps {
   type: "login" | "register";
 }
 
-const AuthWrapper = ({ children, type }: AuthWrapperProps) => {
+const AuthWrapper = memo(({ children, type }: AuthWrapperProps) => {
   return (
     <div className={style.wrapper()}>
       <div className={style.top()}>
@@ -37,6 +37,6 @@ const AuthWrapper = ({ children, type }: AuthWrapperProps) => {
       </Link>
     </div>
   );
-};
+});
 
 export default AuthWrapper;

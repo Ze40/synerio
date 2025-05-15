@@ -5,7 +5,7 @@ import { useFetcher } from "react-router";
 import { css } from "~/styled-system/css";
 
 import { AuthServices, Captcha } from "@/feat";
-import { AuthWrapper, Input, Line } from "@/shared/ui";
+import { AuthWrapper, Input, Line, Toast } from "@/shared/ui";
 import { button } from "@/style/recipes/button";
 import { inputIcon } from "@/style/recipes/img";
 import { useTimeout } from "@/utils/hooks";
@@ -17,6 +17,7 @@ const LoginPage = () => {
   const fetcher = useFetcher();
   const [isCaptcha, setIsCaptcha] = useState<boolean>(false);
   const [captchaValue, setCaptchaValue] = useState<string | null>("");
+  const [error, setError] = useState<string | null>(null);
   const timeout = useTimeout();
 
   useEffect(() => {
@@ -33,15 +34,12 @@ const LoginPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     for (const key in formData) {
       if (formData[key] === null) {
-        console.error("Все поля должны быть заполнены");
+        setError("Все поля должны быть заполнены");
         return;
       }
     }
@@ -49,7 +47,7 @@ const LoginPage = () => {
     setIsCaptcha(true);
 
     if (!captchaValue) {
-      console.error("Пожалуйста, подтвердите, что вы не робот");
+      setError("Пожалуйста, подтвердите, что вы не робот");
       return;
     }
 
@@ -109,6 +107,12 @@ const LoginPage = () => {
           siteKey={import.meta.env.VITE_GOOGLE_RECAPTCHA_SITE_KEY as string}
           isOpen={isCaptcha}
           onChange={(token) => setCaptchaValue(token)}
+        />
+        <Toast
+          onClose={() => setError(null)}
+          isOpen={error !== null}
+          title="Ошибка:"
+          massage={error !== null ? error : ""}
         />
       </form>
     </AuthWrapper>
