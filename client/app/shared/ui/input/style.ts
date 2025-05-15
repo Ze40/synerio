@@ -5,6 +5,14 @@ export const container = cva({
     textAlign: "start",
     position: "relative",
   },
+  variants: {
+    isContainerStyle: {
+      true: {},
+      false: {
+        width: "min-content",
+      },
+    },
+  },
 });
 
 export const inputBox = cva({

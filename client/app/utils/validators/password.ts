@@ -4,7 +4,7 @@ export const passwordValidator: Validator = (value) => {
   const hasLowerAndUpper = /(?=.*[a-z])(?=.*[A-Z])/;
   const hasDigit = /[0-9]/;
   const hasSpecial = /[_\.,!]/;
-  console.log(1);
+
   if (!value) {
     return "Это обязательное поле";
   }

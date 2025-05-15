@@ -2,19 +2,18 @@ import {
   type ChangeEvent,
   type InputHTMLAttributes,
   type ReactElement,
-  useEffect,
   useRef,
   useState,
 } from "react";
 
-import { CircleAlert, Eye, type LucideProps } from "lucide-react";
+import { CircleAlert, Eye } from "lucide-react";
 
 import { useValidator } from "@/utils/hooks";
 import type { Validator } from "@/utils/validators";
 
 import * as style from "./style";
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> {
   className?: string;
   label?: string;
   icon?: ReactElement;
@@ -23,6 +22,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   variant: "border";
   validator?: Validator[] | Validator;
   containerClassName?: string;
+  onChange?: (value: string | null, name: string) => void;
 }
 
 const Input = ({
@@ -34,6 +34,7 @@ const Input = ({
   isSecure = false,
   validator = () => true,
   containerClassName,
+  onChange,
   ...props
 }: InputProps) => {
   const { error, isCorrect, validate } = useValidator(validator);
@@ -48,12 +49,22 @@ const Input = ({
     }
     timeRef.current = window.setTimeout(() => {
       validate(value);
+
+      if (onChange) {
+        if (error) {
+          onChange(null, e.target.name);
+        } else {
+          onChange(value, e.target.name);
+        }
+      }
     }, 500);
   };
 
   if (isSecure) {
     return (
-      <div className={`${style.container()} ${containerClassName}`}>
+      <div
+        className={`${style.container({ isContainerStyle: !!containerClassName })} ${containerClassName}`}
+      >
         {label && (
           <label htmlFor={name} className={style.label()}>
             {label}
@@ -91,7 +102,9 @@ const Input = ({
   }
 
   return (
-    <div className={`${style.container()} ${containerClassName}`}>
+    <div
+      className={`${style.container({ isContainerStyle: !!containerClassName })} ${containerClassName}`}
+    >
       {label && (
         <label htmlFor={name} className={style.label()}>
           {label}

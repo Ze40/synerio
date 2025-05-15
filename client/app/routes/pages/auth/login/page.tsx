@@ -1,26 +1,49 @@
 import { useEffect, useState } from "react";
 
 import { Mail } from "lucide-react";
-import ReCAPTCHA from "react-google-recaptcha";
 import { useFetcher } from "react-router";
 import { css } from "~/styled-system/css";
 
-import { AuthServices } from "@/feat";
+import { AuthServices, Captcha } from "@/feat";
 import { AuthWrapper, Input, Line } from "@/shared/ui";
 import { button } from "@/style/recipes/button";
-import { recaptcha } from "@/style/recipes/captcha";
 import { inputIcon } from "@/style/recipes/img";
-import { useClient } from "@/utils/hooks";
+import { useTimeout } from "@/utils/hooks";
 import { emailValidator, passwordValidator } from "@/utils/validators";
 
 import * as style from "./style";
 
 const LoginPage = () => {
   const { Form } = useFetcher();
-  const isClient = useClient();
+  const [isCaptcha, setIsCaptcha] = useState<boolean>(true);
+  const [captchaValue, setCaptchaValue] = useState<string | null>("");
+  const timeout = useTimeout();
+
+  useEffect(() => {
+    if (captchaValue) {
+      timeout(() => setIsCaptcha(false), 300);
+    }
+  }, [captchaValue]);
+
+  const [formData, setFormData] = useState<{ [key: string]: string | null }>({
+    email: null,
+    password: null,
+  });
+  const handleChange = (value: string | null, name: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+    for (const key in formData) {
+      if (formData[key] === null) {
+        return;
+      }
+    }
+  };
+
   return (
     <AuthWrapper type="login">
-      <Form className={style.form()}>
+      <Form className={style.form()} onSubmit={handleSubmit}>
         <Input
           required
           validator={emailValidator}
@@ -29,6 +52,7 @@ const LoginPage = () => {
           placeholder="Почта"
           variant={"border"}
           className={style.input()}
+          onChange={handleChange}
         />
         <Input
           required
@@ -38,13 +62,8 @@ const LoginPage = () => {
           placeholder="Пароль"
           variant={"border"}
           className={style.input()}
+          onChange={handleChange}
         />
-
-        {isClient && (
-          <div className={recaptcha()}>
-            <ReCAPTCHA sitekey={import.meta.env.VITE_GOOGLE_RECAPTCHA_SITE_KEY} />
-          </div>
-        )}
         <button
           type={"submit"}
           className={`${button({ variant: "primary", size: "big" })} ${css({ width: "100%" })}`}
@@ -57,6 +76,11 @@ const LoginPage = () => {
           <Line weigth={2} length={30} color="gray" />
         </div>
         <AuthServices />
+        <Captcha
+          siteKey={import.meta.env.VITE_GOOGLE_RECAPTCHA_SITE_KEY as string}
+          isOpen={isCaptcha}
+          onChange={(token) => setCaptchaValue(token)}
+        />
       </Form>
     </AuthWrapper>
   );

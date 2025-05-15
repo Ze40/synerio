@@ -1,11 +1,9 @@
 import { Mail } from "lucide-react";
-import ReCAPTCHA from "react-google-recaptcha";
 import { useFetcher } from "react-router";
 import { css } from "~/styled-system/css";
 
 import { AuthWrapper, Input } from "@/shared/ui";
 import { button } from "@/style/recipes/button";
-import { recaptcha } from "@/style/recipes/captcha";
 import { inputIcon } from "@/style/recipes/img";
 import { useClient } from "@/utils/hooks";
 import {
