@@ -9,4 +9,5 @@ export default [
   layout("./routes/pages/synerio/layout.tsx", [
     route("/feat", "./routes/pages/synerio/feat/page.tsx"),
   ]),
+  route("/auth/verify", "./routes/pages/auth/verify/page.tsx"),
 ] satisfies RouteConfig;

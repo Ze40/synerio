@@ -30,6 +30,11 @@ export const button = cva({
         minWidth: "200px",
         fontSize: "xl",
       },
+      normal: {
+        padding: "10px 20px",
+        minWidth: "100px",
+        fontSize: "md",
+      },
     },
   },
 });

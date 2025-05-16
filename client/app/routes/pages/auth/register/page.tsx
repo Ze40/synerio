@@ -6,7 +6,7 @@ import { css } from "~/styled-system/css";
 
 import { Captcha, OAuthServices } from "@/feat";
 import { authService } from "@/feat/auth/services";
-import { AuthWrapper, Input, Line, Toast } from "@/shared/ui";
+import { AuthWrapper, Input, Line, Modal, Toast } from "@/shared/ui";
 import { button } from "@/style/recipes/button";
 import { inputIcon } from "@/style/recipes/img";
 import { FetchError } from "@/utils/fetch";
@@ -31,7 +31,6 @@ export const clientAction = async ({ request }: Route.ClientActionArgs) => {
   const lastName = formData.get("lastName");
 
   if (!email || !password || !firstName || !lastName || !passwordRepeat) {
-    console.log(email, password, firstName, lastName, passwordRepeat);
     return { error: "Все поля обязательны!" };
   }
 
@@ -62,12 +61,16 @@ const RegisterPage = () => {
   const [isCaptcha, setIsCaptcha] = useState<boolean>(false);
   const [captchaValue, setCaptchaValue] = useState<string | null>("");
   const [error, setError] = useState<string | null>(null);
+  const [confirm, setConfirm] = useState<string | null>(null);
   const timeout = useTimeout();
 
   useEffect(() => {
-    console.log(fetcher.data);
     if (fetcher.data && "error" in fetcher.data) {
       setError(fetcher.data.error as string);
+      return;
+    }
+    if (fetcher.data && "message" in fetcher.data) {
+      setConfirm(fetcher.data.message);
       return;
     }
   }, [fetcher.data]);
@@ -195,6 +198,9 @@ const RegisterPage = () => {
           title="Ошибка:"
           massage={error !== null ? error : ""}
         />
+        <Modal title="Подтверждение" onClose={() => setConfirm(null)} isOpen={confirm !== null}>
+          <p>{confirm}</p>
+        </Modal>
       </form>
     </AuthWrapper>
   );

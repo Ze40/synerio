@@ -33,6 +33,11 @@ class AuthService {
     const response = await api.get<{ url: string }>(`auth/oauth/connect/${privider}`);
     return response;
   }
+
+  public async confirmEmail(token: string) {
+    const response = await api.post<IUser>("auth/email-confirmation", { token: token });
+    return response;
+  }
 }
 
 export const authService = new AuthService();
