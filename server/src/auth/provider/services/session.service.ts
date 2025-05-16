@@ -11,6 +11,7 @@ export class SessionService {
         if (err) {
           return reject(new Error('Не удалось сохранить сессию'));
         }
+
         resolve({ user });
       });
     });

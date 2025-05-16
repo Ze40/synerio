@@ -4,7 +4,7 @@ export const logo = cva({
   base: {
     aspectRatio: "1 / 1",
     objectFit: "contain",
-    width: "40px",
+    width: "60px",
   },
 
   variants: {

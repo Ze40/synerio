@@ -153,6 +153,7 @@ const LoginPage = () => {
         >
           Войти
         </button>
+
         <div className={style.lines()}>
           <Line weigth={2} length={30} color="gray" />
           или

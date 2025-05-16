@@ -1,6 +1,7 @@
 import { api } from "@/api";
+import type { IUser } from "@/entities/user/types";
 
-import type { IUser, TypeLoginSchema, TypeRegisterSchema } from "../schemes";
+import type { TypeLoginSchema, TypeRegisterSchema } from "../schemes";
 
 class AuthService {
   public async register(body: TypeRegisterSchema, recaptcha?: string) {

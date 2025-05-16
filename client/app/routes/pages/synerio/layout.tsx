@@ -1,35 +1,43 @@
-import { Outlet } from "react-router";
+import { Outlet, useLoaderData } from "react-router";
 import { redirect } from "react-router";
 
-import type { Route } from "./+types/layout";
+import type { IUser } from "@/entities/user/types";
+import { userService } from "@/feat/user/services";
+import { Container, Header, Navigation } from "@/shared/ui";
 
-export const loader = async ({ request }: Route.ClientLoaderArgs) => {
-  const headers = request.headers;
-  const cookieHeader = headers.get("Cookie");
+import * as style from "./style";
 
-  if (!cookieHeader) {
+export const clientLoader = async () => {
+  try {
+    const user = await userService.getProfile();
+
+    if (!user) {
+      return redirect("/login");
+    }
+
+    return user;
+  } catch (error) {
+    console.error("Ошибка профиля:", error);
     return redirect("/login");
   }
-
-  // Parse cookies
-  const cookies = Object.fromEntries(
-    cookieHeader.split("; ").map((cookie) => {
-      const [key, value] = cookie.split("=");
-      return [key, decodeURIComponent(value)];
-    })
-  );
-
-  return { cookies };
 };
 
 export function meta() {
-  return [{ title: "Synerio" }, { name: "description", content: "Welcome to React Router!" }];
+  return [
+    { title: "Synerio" },
+    { name: "description", content: "Welcome to scial media service - Synerio" },
+  ];
 }
 
 const SynerioLayout = () => {
+  const user = useLoaderData<IUser>();
   return (
     <div>
-      <Outlet />
+      <Header userName={user.displayName} userPictue={user.picture} />
+      <Container className={style.container()}>
+        <Navigation />
+        <Outlet />
+      </Container>
     </div>
   );
 };

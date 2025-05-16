@@ -61,6 +61,15 @@ export default defineConfig({
               color: "{colors.lighter}",
             },
           },
+          bottomSecondary: {
+            value: {
+              offsetX: 5,
+              offsetY: 0,
+              blur: 15,
+              spread: 0,
+              color: "{colors.lighter}",
+            },
+          },
         },
       },
     },

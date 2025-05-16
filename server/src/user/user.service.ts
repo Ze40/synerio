@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { hash } from 'argon2';
 import { Prisma } from 'prisma/__generated__';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -22,7 +26,6 @@ export class UserService {
         accounts: true,
       },
     });
-
     if (!user) {
       throw new NotFoundException(
         'Пользователь не найден. Проверьте введенные данные',
@@ -45,18 +48,21 @@ export class UserService {
   }
 
   public async create(newUser: CreateUserDto): Promise<UserWithAccounts> {
-    const user = await this.prismaService.user.create({
-      data: {
-        ...newUser,
-        password: newUser.password ? await hash(newUser.password) : '',
-        // Если есть другие специфические преобразования данных
-      },
-      include: {
-        accounts: true,
-      },
-    });
-
-    return user;
+    try {
+      const user = await this.prismaService.user.create({
+        data: {
+          ...newUser,
+          password: newUser.password ? await hash(newUser.password) : '',
+        },
+        include: {
+          accounts: true,
+        },
+      });
+      return user;
+    } catch (error) {
+      console.log(error);
+      throw new ConflictException('Такой пользователь уже существует');
+    }
   }
 
   public async update(userId: string, dto: UpdateUserDto) {

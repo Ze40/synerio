@@ -6,6 +6,7 @@ import {
   ScrollRestoration,
   isRouteErrorResponse,
 } from "react-router";
+import { css } from "~/styled-system/css";
 
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
@@ -37,7 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className={css({ bg: "primary" })}>
         {children}
         <ScrollRestoration />
         <Scripts />
