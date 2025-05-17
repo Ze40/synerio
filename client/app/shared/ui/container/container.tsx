@@ -11,7 +11,8 @@ const Container = ({ className, children }: ContainerProps) => {
   return (
     <div
       className={`${css({
-        maxWidth: "1400px",
+        width: "100%",
+        padding: "0 40px",
         position: "relative",
         margin: "0 auto",
       })} ${className}`}

@@ -10,6 +10,7 @@ import { MailModule } from './mail/mail.module';
 import { PasswordResetModule } from './password-reset/password-reset.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UserModule } from './user/user.module';
     EmailConfirmationModule,
     PasswordResetModule,
     TwoFactorAuthModule,
+    PostsModule,
   ],
 })
 export class AppModule {}

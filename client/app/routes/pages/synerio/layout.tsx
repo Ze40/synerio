@@ -3,7 +3,7 @@ import { redirect } from "react-router";
 
 import type { IUser } from "@/entities/user/types";
 import { userService } from "@/feat/user/services";
-import { Container, Header, Navigation } from "@/shared/ui";
+import { Header, Navigation } from "@/shared/ui";
 
 import * as style from "./style";
 
@@ -32,12 +32,10 @@ export function meta() {
 const SynerioLayout = () => {
   const user = useLoaderData<IUser>();
   return (
-    <div>
+    <div className={style.layout()}>
       <Header userName={user.displayName} userPictue={user.picture} />
-      <Container className={style.container()}>
-        <Navigation />
-        <Outlet />
-      </Container>
+      <Navigation />
+      <Outlet />
     </div>
   );
 };

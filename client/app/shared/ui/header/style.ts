@@ -2,20 +2,19 @@ import { cva } from "~/styled-system/css";
 
 export const header = cva({
   base: {
-    borderBottom: "secondaryBorder",
-    background: "gray.50",
-    shadow: "bottomSecondary",
+    background: "primary",
+    gridRow: 1,
+    gridColumn: "1 / 3",
+    borderRadius: "10px",
+    padding: "20px 0",
   },
 });
 
 export const container = cva({
   base: {
-    width: "100%",
-    position: "relative",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "20px",
   },
 });
 

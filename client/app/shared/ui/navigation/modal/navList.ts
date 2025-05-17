@@ -1,4 +1,4 @@
-import { type LucideProps, Newspaper } from "lucide-react";
+import { type LucideProps, Newspaper, UserCircle2 } from "lucide-react";
 
 interface IPageNav {
   id: number;
@@ -10,6 +10,12 @@ interface IPageNav {
 }
 
 export const navList: IPageNav[] = [
+  {
+    id: 2,
+    title: "Профиль",
+    href: "/profile",
+    icon: UserCircle2,
+  },
   {
     id: 1,
     title: "Лента",

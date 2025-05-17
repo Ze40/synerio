@@ -18,7 +18,7 @@ export default defineConfig({
         colors: {
           primary: { value: "#FAFAFA" },
           secondary: { value: "#F75523" },
-          lighter: { value: "#f5802c" },
+          lighter: { value: "#FFB173	" },
           dark: { value: "#141414" },
           mainGray: { value: "#ababab" },
           error: { value: "#ff0000" },
